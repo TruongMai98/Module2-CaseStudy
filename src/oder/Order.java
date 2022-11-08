@@ -1,49 +1,91 @@
 package oder;
 
 import product.Product;
+import product.ProductManagement;
 
+
+import java.time.LocalDate;
 import java.util.*;
 
 public class Order {
-    private UUID oderId;
-    private Date purchaseDate;
+    private UUID orderId;
+    private LocalDate purchaseDate;
     private String customerId;
     private String customerName;
+    private int quantity = 0;
     private double subTotal;
     private double total;
-    private int telephoneNumber;
+    private String telephoneNumber;
+    private HashMap<String, Integer> hashMap;
+    ProductManagement productManagement = ProductManagement.getProductManagement();
 
-    public Order(String customerId, String customerName, int telephoneNumber) {
-        this.oderId = UUID.randomUUID();
-        this.purchaseDate = new Date();
+    public Order() {
+    }
+    public Order(UUID orderId, LocalDate purchaseDate, String customerId,
+                 String customerName, double subTotal, double total, String telephoneNumber) {
+        this.orderId = orderId;
+        this.purchaseDate = purchaseDate;
+        this.customerId = customerId;
+        this.customerName = customerName;
+        this.subTotal = subTotal;
+        this.total = total;
+        this.telephoneNumber = telephoneNumber;
+        this.hashMap = new HashMap<>();
+    }
+
+    public Order(String customerId, String customerName, String telephoneNumber) {
+        this.orderId = UUID.randomUUID();
+        this.purchaseDate = LocalDate.now();
         this.customerId = customerId;
         this.customerName = customerName;
         this.telephoneNumber = telephoneNumber;
+        this.hashMap = new HashMap<>();
     }
 
-    public List<HashMap<Product, Integer>> addProductList(String productId, int quantity) {
-        List<String> productList = new ArrayList<>();
-        Map<String, Integer> hashMap = new HashMap<>();
-        for (int i = 0; i < productList.size(); i++) {
-            productList.add(String.valueOf(hashMap.put(productId,quantity)));
+    public HashMap<String, Integer> getHashMap() {
+        return hashMap;
+    }
 
+    public void addProduct(String productId, int quantity) {
+        getHashMap().put(productId, quantity);
+    }
+
+    public void setSubTotal() {
+
+    }
+
+    public double getSubTotal(String productId, int quantity) {
+        double sub = 0;
+        Product p = productManagement.searchById(productId);
+        sub = p.getProductPrice() * quantity;
+        this.subTotal = sub;
+        return sub;
+    }
+
+    public double getTotal() {
+        return total;
+    }
+
+    public void setTotal() {
+        double total = 0;
+        for (String key : hashMap.keySet()) {
+            total += getSubTotal(key, hashMap.get(key));
         }
-        return productList;
+        this.total = total;
+    }
+    public UUID getOrderId() {
+        return orderId;
     }
 
-    public UUID getOderId() {
-        return oderId;
+    public void setOrderId(UUID orderId) {
+        this.orderId = orderId;
     }
 
-    public void setOderId(UUID oderId) {
-        this.oderId = oderId;
-    }
-
-    public Date getPurchaseDate() {
+    public LocalDate getPurchaseDate() {
         return purchaseDate;
     }
 
-    public void setPurchaseDate(Date purchaseDate) {
+    public void setPurchaseDate(LocalDate purchaseDate) {
         this.purchaseDate = purchaseDate;
     }
 
@@ -64,28 +106,51 @@ public class Order {
     }
 
 
-    public int getTelephoneNumber() {
+    public String getTelephoneNumber() {
         return telephoneNumber;
     }
 
-    public void setTelephoneNumber(int telephoneNumber) {
+    public void setTelephoneNumber(String telephoneNumber) {
         this.telephoneNumber = telephoneNumber;
     }
 
-    public double getSubTotal() {
-        return productPrice() * ;
+
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setSubTotal(double subTotal) {
-        this.subTotal = subTotal;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
 
-    public double getTotal() {
-        return total;
+
+
+    @Override
+    public String toString() {
+        String out = "";
+        for (Map.Entry<String, Integer> h : getHashMap().entrySet()) {
+            Product p = productManagement.searchById(h.getKey());
+            out += h.getKey() + "\t\t\t" + p.getProductName() + "\t\t\t" + p.getProductPrice() + "\t\t\t" +
+                    h.getValue() + "\t\t\t" + getSubTotal(h.getKey(), h.getValue()) + "\n";
+        }
+        return "\n ID hóa đơn: " + orderId + "\n" +
+                "Ngày mua: " + purchaseDate + "\n" +
+                "Tên khách hàng: " + customerName + "\n" +
+                "SĐT khách hàng: " + telephoneNumber + "\n" +
+                "ID sản phẩm \t" + "Tên sản phẩm \t\t\t\t" + "Giá \t\t\t" + "Số lượng \t" + "Thành tiền \n" +
+                out + "\n" +
+                "\t\t\t\t\t\t\t\t\t\t\t\t Tổng tiền: " + getTotal();
     }
 
-    public void setTotal(double total) {
-        this.total = total;
+    public String toFile() {
+        String out = "";
+        out += orderId + "," + purchaseDate + "," + customerId + "," +
+                customerName + "," + subTotal + "," + total + "," + telephoneNumber;
+        for (String pId : hashMap.keySet()) {
+            out += "," + pId + "," + hashMap.get(pId);
+        }
+        return out;
     }
+
 
 }

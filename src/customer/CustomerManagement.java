@@ -43,9 +43,9 @@ public class CustomerManagement {
         return customerArrayList;
     }
 
-    public Customer searchByTelephoneNumber(int telephoneNumber) {
+    public Customer searchByTelephoneNumber(String telephoneNumber) {
         for (Customer c : customerList) {
-            if (c.getTelephoneNumber() == telephoneNumber) {
+            if (c.getTelephoneNumber().equals(telephoneNumber)) {
                 return c;
             }
         }
@@ -109,6 +109,6 @@ public class CustomerManagement {
 
     public Customer handleLine(String line) {
         String[] strings = line.split(",");
-        return new Customer(strings[0], strings[1], Integer.parseInt(strings[2]));
+        return new Customer(strings[0], strings[1], strings[2]);
     }
 }

@@ -53,8 +53,7 @@ public class CustomerManagementMenu {
         System.out.println("Nhập tên khách hàng");
         String customerName = scanner.nextLine();
         System.out.println("Nhập số điện thoại khách hàng");
-        int telephoneNumber = scanner.nextInt();
-        scanner.nextLine();
+        String telephoneNumber = scanner.nextLine();
 
         Customer newCustomer = new Customer(customerId, customerName, telephoneNumber);
         customerManagement.add(newCustomer);
@@ -100,8 +99,7 @@ public class CustomerManagementMenu {
     private void searchByTelephoneNumber() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Nhập số điện thoại");
-        int searchTelephoneNumber = scanner.nextInt();
-        scanner.nextLine();
+        String searchTelephoneNumber = scanner.nextLine();
         Customer searchByTelephoneNumber = customerManagement.searchByTelephoneNumber(searchTelephoneNumber);
         if (searchByTelephoneNumber != null) {
             System.out.println(searchByTelephoneNumber);
@@ -117,8 +115,7 @@ public class CustomerManagementMenu {
         System.out.println("Nhập tên khách hàng mới");
         String customerName = scanner.nextLine();
         System.out.println("Nhập số điện thoại mới");
-        int telephoneNumber = scanner.nextInt();
-        scanner.nextLine();
+        String telephoneNumber = scanner.nextLine();
 
         Customer newCustomer = new Customer(customerId, customerName, telephoneNumber);
         customerManagement.updateCustomerById(newCustomer.getCustomerId(), newCustomer);

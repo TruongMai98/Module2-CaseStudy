@@ -3,12 +3,12 @@ package customer;
 public class Customer {
     private String customerId;
     private String customerName;
-    private int telephoneNumber;
+    private String telephoneNumber;
 
     public Customer() {
     }
 
-    public Customer(String customerId, String customerName, int telephoneNumber) {
+    public Customer(String customerId, String customerName, String telephoneNumber) {
         this.customerId = customerId;
         this.customerName = customerName;
         this.telephoneNumber = telephoneNumber;
@@ -30,11 +30,11 @@ public class Customer {
         this.customerName = customerName;
     }
 
-    public int getTelephoneNumber() {
+    public String getTelephoneNumber() {
         return telephoneNumber;
     }
 
-    public void setTelephoneNumber(int telephoneNumber) {
+    public void setTelephoneNumber(String telephoneNumber) {
         this.telephoneNumber = telephoneNumber;
     }
 
