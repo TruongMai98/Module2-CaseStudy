@@ -2,6 +2,7 @@ package oder;
 
 import javax.security.sasl.SaslClient;
 import java.util.Scanner;
+import java.util.UUID;
 
 public class OrderManagementMenu {
     OrderManagement orderManagement = OrderManagement.getOderManagement();
@@ -68,10 +69,26 @@ public class OrderManagementMenu {
     }
 
     private void remove() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhập id đơn hàng cần xóa");
+        UUID orderId = UUID.fromString(scanner.nextLine());
+        if (orderManagement.removeByOderId(orderId)) {
+            System.out.println("Đã xóa");
+        } else {
+            System.out.println("Xóa thất bại");
+        }
     }
 
     private void searchByOrderId() {
-
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhập id đơn hàng");
+        UUID orderId = UUID.fromString(scanner.nextLine());
+        Order searchByOrderId = orderManagement.searchByOrderId(orderId);
+        if (searchByOrderId != null) {
+            System.out.println(searchByOrderId);
+        } else {
+            System.out.println("Không tìm thấy id hóa đơn");
+        }
     }
 
     private void printOrder() {

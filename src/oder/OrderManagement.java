@@ -1,14 +1,15 @@
 package oder;
 
+import customer.CustomerManagement;
+import product.Product;
+import product.ProductManagement;
+
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class OrderManagement {
     private static final String FILE_PATH = "order.csv";
@@ -17,6 +18,8 @@ public class OrderManagement {
         return orderManagement;
     }
 
+    ProductManagement productManagement = ProductManagement.getProductManagement();
+    CustomerManagement customerManagement = CustomerManagement.getCustomerManagement();
     private List<Order> orderList;
 
     private OrderManagement() {
@@ -27,6 +30,7 @@ public class OrderManagement {
     public void add(Order newOrder) {
         newOrder.setTotal();
         orderList.add(newOrder);
+        updateQuantity(newOrder);
         saveFile();
     }
 
@@ -43,9 +47,9 @@ public class OrderManagement {
         Order o = searchByOrderId(orderId);
         if (o != null) {
             orderList.remove(o);
+            saveFile();
             return true;
         }
-        saveFile();
         return false;
     }
 
@@ -57,6 +61,15 @@ public class OrderManagement {
         }
         readFromFile();
         return string;
+    }
+
+    public void updateQuantity(Order newOrder) {
+        HashMap<String, Integer> newHashMap = newOrder.getHashMap();
+        for (Map.Entry<String, Integer>  e : newHashMap.entrySet()) {
+            Product product =  productManagement.searchById(e.getKey());
+            product.setStock(product.getStock() - e.getValue());
+        }
+        productManagement.saveFile();
     }
 
     public void saveFile() {

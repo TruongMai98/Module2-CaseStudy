@@ -3,7 +3,6 @@ package customer;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class CustomerManagement {
     private List<Customer> customerList;
@@ -21,7 +20,7 @@ public class CustomerManagement {
 
     public void add(Customer newCustomer) {
         customerList.add(newCustomer);
-        saveFie();
+        saveFile();
     }
 
     public Customer searchById(String customerId) {
@@ -56,9 +55,10 @@ public class CustomerManagement {
         Customer c = searchById(customerId);
         if (c != null) {
             customerList.remove(c);
+            saveFile();
             return true;
         }
-        saveFie();
+
         return false;
     }
 
@@ -72,10 +72,10 @@ public class CustomerManagement {
             c.setCustomerName(newCustomer.getCustomerName());
             c.setTelephoneNumber(newCustomer.getTelephoneNumber());
         }
-        saveFie();
+        saveFile();
     }
 
-    public void saveFie() {
+    public void saveFile() {
         try {
             FileWriter fileWriter = new FileWriter(FILE_PATH);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);

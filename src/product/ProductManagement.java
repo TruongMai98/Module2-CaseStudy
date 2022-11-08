@@ -55,9 +55,9 @@ public class ProductManagement {
         Product p = searchById(productId);
         if (p != null) {
             productList.remove(p);
+            saveFile();
             return true;
         }
-        saveFile();
         return false;
     }
 

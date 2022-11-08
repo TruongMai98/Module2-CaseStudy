@@ -1,5 +1,6 @@
 package oder;
 
+import customer.CustomerManagement;
 import product.Product;
 import product.ProductManagement;
 
@@ -18,6 +19,8 @@ public class Order {
     private String telephoneNumber;
     private HashMap<String, Integer> hashMap;
     ProductManagement productManagement = ProductManagement.getProductManagement();
+    OrderManagement orderManagement = OrderManagement.getOderManagement();
+    CustomerManagement customerManagement = CustomerManagement.getCustomerManagement();
 
     public Order() {
     }
@@ -48,10 +51,6 @@ public class Order {
 
     public void addProduct(String productId, int quantity) {
         getHashMap().put(productId, quantity);
-    }
-
-    public void setSubTotal() {
-
     }
 
     public double getSubTotal(String productId, int quantity) {
@@ -124,7 +123,6 @@ public class Order {
     }
 
 
-
     @Override
     public String toString() {
         String out = "";
@@ -133,7 +131,7 @@ public class Order {
             out += h.getKey() + "\t\t\t" + p.getProductName() + "\t\t\t" + p.getProductPrice() + "\t\t\t" +
                     h.getValue() + "\t\t\t" + getSubTotal(h.getKey(), h.getValue()) + "\n";
         }
-        return "\n ID hóa đơn: " + orderId + "\n" +
+        return "\nID hóa đơn: " + orderId + "\n" +
                 "Ngày mua: " + purchaseDate + "\n" +
                 "Tên khách hàng: " + customerName + "\n" +
                 "SĐT khách hàng: " + telephoneNumber + "\n" +
