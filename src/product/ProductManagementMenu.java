@@ -55,6 +55,11 @@ public class ProductManagementMenu {
         String productId = scanner.nextLine();
         System.out.println("Nhập tên sản phẩm");
         String productName = scanner.nextLine();
+        if (productName.length() < 19) {
+            for (int i = productName.length(); i < 20; i++ ) {
+                productName += ' ';
+            }
+        }
         System.out.println("Nhập loại sản phẩm");
         String productType = scanner.nextLine();
         System.out.println("Nhập giá sản phẩm");

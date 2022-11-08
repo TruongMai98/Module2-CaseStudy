@@ -1,12 +1,11 @@
 package oder;
 
+import customer.Customer;
 import customer.CustomerManagement;
 import product.Product;
 import product.ProductManagement;
 
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -31,6 +30,7 @@ public class OrderManagement {
         newOrder.setTotal();
         orderList.add(newOrder);
         updateQuantity(newOrder);
+        updateCustomer(newOrder);
         saveFile();
     }
 
@@ -41,6 +41,16 @@ public class OrderManagement {
             }
         }
         return null;
+    }
+
+    public List<Order> searchByCustomerName(String customerName) {
+        List<Order> orderArrayList = new ArrayList<>();
+        for (Order o : orderList) {
+            if (o.getCustomerName().contains(customerName)) {
+                orderArrayList.add(o);
+            }
+        }
+        return orderArrayList;
     }
 
     public boolean removeByOderId(UUID orderId) {
@@ -68,8 +78,30 @@ public class OrderManagement {
         for (Map.Entry<String, Integer>  e : newHashMap.entrySet()) {
             Product product =  productManagement.searchById(e.getKey());
             product.setStock(product.getStock() - e.getValue());
+            if (product.getStock() > 0) {
+                productManagement.saveFile();
+            }
         }
-        productManagement.saveFile();
+    }
+
+    public void updateCustomer(Order newOrder) {
+        Customer c = customerManagement.searchById(newOrder.getCustomerId());
+        if (c != null) {
+            c.setCustomerId(newOrder.getCustomerId());
+            c.setCustomerName(newOrder.getCustomerName());
+            c.setTelephoneNumber(newOrder.getTelephoneNumber());
+        } else {
+            Customer newCustomer = new Customer();
+            newCustomer.setCustomerId(newOrder.getCustomerId());
+            newCustomer.setCustomerName(newOrder.getCustomerName());
+            newCustomer.setTelephoneNumber(newOrder.getTelephoneNumber());
+            customerManagement.add(newCustomer);
+        }
+        customerManagement.saveFile();
+    }
+
+    public List<Product> inStockList() {
+        return productManagement.inStock();
     }
 
     public void saveFile() {
@@ -110,9 +142,8 @@ public class OrderManagement {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate stringsDate = LocalDate.parse(strings[1], formatter);
 
-        o = new Order(UUID.fromString(strings[0]), stringsDate, strings[2], strings[3],
-                Double.parseDouble(strings[4]), Double.parseDouble(strings[5]), strings[6]);
-        for (int i = 7; i < strings.length; i += 2) {
+        o = new Order(UUID.fromString(strings[0]), stringsDate, strings[2], strings[3], Double.parseDouble(strings[4]), strings[5]);
+        for (int i = 6; i < strings.length; i += 2) {
             o.addProduct(strings[i], Integer.parseInt(strings[i + 1]));
         }
         return o;

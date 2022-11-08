@@ -19,18 +19,15 @@ public class Order {
     private String telephoneNumber;
     private HashMap<String, Integer> hashMap;
     ProductManagement productManagement = ProductManagement.getProductManagement();
-    OrderManagement orderManagement = OrderManagement.getOderManagement();
-    CustomerManagement customerManagement = CustomerManagement.getCustomerManagement();
 
     public Order() {
     }
     public Order(UUID orderId, LocalDate purchaseDate, String customerId,
-                 String customerName, double subTotal, double total, String telephoneNumber) {
+                 String customerName, double total, String telephoneNumber) {
         this.orderId = orderId;
         this.purchaseDate = purchaseDate;
         this.customerId = customerId;
         this.customerName = customerName;
-        this.subTotal = subTotal;
         this.total = total;
         this.telephoneNumber = telephoneNumber;
         this.hashMap = new HashMap<>();
@@ -122,28 +119,34 @@ public class Order {
         this.quantity = quantity;
     }
 
-
     @Override
     public String toString() {
         String out = "";
         for (Map.Entry<String, Integer> h : getHashMap().entrySet()) {
             Product p = productManagement.searchById(h.getKey());
-            out += h.getKey() + "\t\t\t" + p.getProductName() + "\t\t\t" + p.getProductPrice() + "\t\t\t" +
-                    h.getValue() + "\t\t\t" + getSubTotal(h.getKey(), h.getValue()) + "\n";
+            out += " " + h.getKey() + "\t\t\t\t" + p.getProductName() + "\t\t\t" + p.getProductPrice() + "\t\t\t" + h.getValue() + "\t\t\t\t\t" + getSubTotal(h.getKey(), h.getValue()) + "\n";
+
         }
-        return "\nID hóa đơn: " + orderId + "\n" +
+
+        return
+                "------------------------------------------------------------------------------------------------------\n" +
+                "|                                            Hóa đơn siêu thị mini                                   |\n" +
+                "------------------------------------------------------------------------------------------------------\n" +
+                "ID hóa đơn: " + orderId + "\n" +
                 "Ngày mua: " + purchaseDate + "\n" +
                 "Tên khách hàng: " + customerName + "\n" +
                 "SĐT khách hàng: " + telephoneNumber + "\n" +
-                "ID sản phẩm \t" + "Tên sản phẩm \t\t\t\t" + "Giá \t\t\t" + "Số lượng \t" + "Thành tiền \n" +
+                "------------------------------------------------------------------------------------------------------\n" +
+                "|ID sản phẩm \t\t" + "Tên sản phẩm \t\t\t\t" + "Giá \t\t\t" + "Số lượng \t\t\t" + "Thành tiền\t\t | \n" +
+                "------------------------------------------------------------------------------------------------------\n" +
                 out + "\n" +
-                "\t\t\t\t\t\t\t\t\t\t\t\t Tổng tiền: " + getTotal();
+                "Tổng tiền: " + getTotal() + "\n" +
+                "                                          -----Cảm ơn quý khách-----                                  \n\n";
     }
 
     public String toFile() {
         String out = "";
-        out += orderId + "," + purchaseDate + "," + customerId + "," +
-                customerName + "," + subTotal + "," + total + "," + telephoneNumber;
+        out += orderId + "," + purchaseDate + "," + customerId + "," + customerName + "," + total + "," + telephoneNumber;
         for (String pId : hashMap.keySet()) {
             out += "," + pId + "," + hashMap.get(pId);
         }

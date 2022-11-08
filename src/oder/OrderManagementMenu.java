@@ -1,11 +1,19 @@
 package oder;
 
+import customer.Customer;
+import customer.CustomerManagement;
+import product.Product;
+import product.ProductManagement;
+
 import javax.security.sasl.SaslClient;
+import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class OrderManagementMenu {
     OrderManagement orderManagement = OrderManagement.getOderManagement();
+    CustomerManagement customerManagement = CustomerManagement.getCustomerManagement();
+    ProductManagement productManagement = ProductManagement.getProductManagement();
     public void displayMenu() {
         System.out.println("_________________________________");
         System.out.println("|               MENU            |");
@@ -14,7 +22,8 @@ public class OrderManagementMenu {
         System.out.println("|1. Thêm hóa đơn                |");
         System.out.println("|2. Xóa hóa đơn                 |");
         System.out.println("|3. Tìm theo ID hóa đơn         |");
-        System.out.println("|4. In hóa đơn                  |");
+        System.out.println("|4. Tìm theo tên khách hàng     |");
+        System.out.println("|5. In hóa đơn                  |");
         System.out.println("|0. Thoát                       |");
         System.out.println("---------------------------------");
     }
@@ -31,16 +40,23 @@ public class OrderManagementMenu {
                 case 1 -> add();
                 case 2 -> remove();
                 case 3 -> searchByOrderId();
-                case 4 -> printOrder();
+                case 4 -> searchByCustomerName();
+                case 5 -> printOrder();
                 default -> {
                 }
             }
         }
     }
 
+
     private void add() {
 
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Danh sách sản phẩm còn hàng");
+        List<Product> productList = productManagement.inStock();
+        for (Product p : productList) {
+            System.out.println(p);
+        }
         System.out.println("Nhập id khách hàng");
         String customerId = scanner.nextLine();
         System.out.println("Tên khách hàng");
@@ -56,10 +72,20 @@ public class OrderManagementMenu {
             if (choose == 1) {
                 System.out.println("Nhập id sản phẩm");
                 String productId = scanner.nextLine();
-                System.out.println("Nhập số lượng mua");
-                int quantity = scanner.nextInt();
-                scanner.nextLine();
-                newOrder.addProduct(productId, quantity);
+                do {
+                    System.out.println("Nhập số lượng mua");
+                    int quantity = scanner.nextInt();
+                    scanner.nextLine();
+                    Product c = productManagement.searchById(productId);
+                    if (quantity > c.getStock()) {
+                        System.out.println("Sản phẩm trong kho không còn đủ");
+                        System.out.println(c.getProductName() + " còn " + c.getStock());
+                        orderManagement.removeByOderId(newOrder.getOrderId());
+                        break;
+                    } else {
+                        newOrder.addProduct(productId, quantity);
+                    }
+                } while (true);
             } else {
                 break;
             }
@@ -88,6 +114,20 @@ public class OrderManagementMenu {
             System.out.println(searchByOrderId);
         } else {
             System.out.println("Không tìm thấy id hóa đơn");
+        }
+    }
+
+    private void searchByCustomerName() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Nhập tên khách hàng");
+        String customerName = scanner.nextLine();
+        List<Order> searchByCustomerName = orderManagement.searchByCustomerName(customerName);
+        if (searchByCustomerName.size() != 0) {
+            for (Order o : searchByCustomerName) {
+                System.out.println(o);
+            }
+        } else {
+            System.out.println("Không tìm thấy khách hàng");
         }
     }
 
