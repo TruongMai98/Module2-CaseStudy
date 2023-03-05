@@ -50,7 +50,6 @@ public class OrderManagementMenu {
 
 
     private void add() {
-
         Scanner scanner = new Scanner(System.in);
         System.out.println("Danh sách sản phẩm còn hàng");
         List<Product> productList = productManagement.inStock();
@@ -85,7 +84,7 @@ public class OrderManagementMenu {
                     } else {
                         newOrder.addProduct(productId, quantity);
                     }
-                } while (true);
+                } while (false);
             } else {
                 break;
             }

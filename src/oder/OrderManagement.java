@@ -145,6 +145,8 @@ public class OrderManagement {
         o = new Order(UUID.fromString(strings[0]), stringsDate, strings[2], strings[3], Double.parseDouble(strings[4]), strings[5]);
         for (int i = 6; i < strings.length; i += 2) {
             o.addProduct(strings[i], Integer.parseInt(strings[i + 1]));
+            System.out.println("====================================================");
+            System.out.println(strings[i]);
         }
         return o;
     }

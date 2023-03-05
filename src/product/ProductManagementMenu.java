@@ -41,7 +41,7 @@ public class ProductManagementMenu {
                 case 6 -> update();
                 case 7 -> outOfStock();
                 case 8 -> inStock();
-                case 9 -> displayAll();
+                case 9 -> System.exit(0);
                 default -> {
                 }
             }
